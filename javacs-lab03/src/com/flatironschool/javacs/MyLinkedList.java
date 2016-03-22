@@ -3,6 +3,8 @@
  */
 package com.flatironschool.javacs;
 
+import java.lang.IndexOutOfBoundsException;
+import java.lang.Override;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -86,7 +88,55 @@ public class MyLinkedList<E> implements List<E> {
 	@Override
 	public void add(int index, E element) {
 		// TODO: fill this in
+     //   printList();
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException();
+        }
+     //   System.out.println("Current size " + size());
+        //add to the last
+        if(index == size) {
+         //   System.out.println("Adding " + element + " in index " + index);
+            add(element);
+            return;
+        }
+
+     //   printList();
+
+        Node newNode = new Node(element, null);
+
+        //add to first
+        if(index == 0) {
+            newNode.next = head;
+            head = newNode;
+            size++;
+            return;
+        }
+
+
+        Node beforeNode = head;
+        for(int i = 0; i < index-1; i++) {
+            beforeNode = beforeNode.next;
+        }
+
+    //    System.out.println("Before Node : " + beforeNode.cargo);
+        newNode.next = beforeNode.next;
+        beforeNode.next = newNode;
+
+        size++;
+
 	}
+
+    private void printList() {
+
+        Node current  = head;
+
+        System.out.print("[");
+        while(current != null) {
+            System.out.print(current.cargo + " ");
+            current = current.next;
+        }
+        System.out.println("]");
+    }
 
 	@Override
 	public boolean addAll(Collection<? extends E> collection) {
@@ -146,6 +196,17 @@ public class MyLinkedList<E> implements List<E> {
 
 	@Override
 	public int indexOf(Object target) {
+
+        int result = 0;
+        Node travelNode = head;
+
+        while(travelNode != null) {
+            if(equals(target, travelNode.cargo)) {
+                return result;
+            }
+            travelNode = travelNode.next;
+            result++;
+        }
 		// TODO: fill this in
 		return -1;
 	}
@@ -202,7 +263,15 @@ public class MyLinkedList<E> implements List<E> {
 	@Override
 	public boolean remove(Object obj) {
 		// TODO: fill this in
-		return false;
+
+        int removedIdx = indexOf(obj);
+        if(removedIdx == -1) {
+            return false;
+        }
+
+        remove(removedIdx);
+
+		return true;
 	}
 
 	@Override
